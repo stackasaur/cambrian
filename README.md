@@ -1,4 +1,4 @@
-# cambrian
+# Cambrian
 Creating HTML elements in JavaScript isn't hard.
 
 ```
@@ -72,12 +72,25 @@ By no means should you see _cambrian_ as an alternative to popular frameworks li
 
 This whole project started as a way to construct popup content within Leaflet maps, and such tasks are what it's good at. Generating simple html elements with events and reactivity.
 
-## reactivity
+## Reactivity
 _cambrian_ includes a simple implementation of a Signal, roughly based on Svelte's store. Shoutout to Svelte: you ran you I could crawl.
 
 Of course, you can use your own implementation too. In the eyes of cambrian, a Signal is anything that properly implements a `subscribe` method. Subscribe is expected to take a function as a parameter, which uses the changed value as its first argument.
 
-## roadmap
+## FAQ
+> Why is it called _cambrian_?
+
+The name comes from the Cambrian Period, an early geological period characterized by a sudden and rapid evolution of life. _Cambrian_ (the framework) was designed to be extremely low level but allow for a rapid development of reactive elements. Plus it's on theme for stackasaur.
+
+> How does it work on older browsers?
+
+Given the low-level nature of the framework, it seems weird to enforce bleeding edge standard. It should work on anything post 2015 without issue. If you notice anything non-compliant, submit an issue or pull request.
+
+## Roadmap
  - [ ] conditional rendering
  - [ ] iteration
  - [ ] components/templates
+
+## Contributing
+
+Accepting Pull Requests, Ideas, Issues, Criticism, and Donations.
