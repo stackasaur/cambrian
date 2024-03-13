@@ -1,14 +1,14 @@
 # Cambrian
 Creating HTML elements in JavaScript isn't hard.
 
-```
+```js
 const p = document.createElement("p");
 p.innerText = "Hello World!";
 ```
 
 However, when you start creating more advanced node-trees, it gets pretty tedious.
 
-```
+```js
 const myFunc = ()=>{};
 const message = "Hello World!";
 
@@ -30,7 +30,7 @@ card.appendChild(p);
 
 Not only is that annoying to write, it's annoying to read. Fortunately, browsers are very good at loading HTML from string, and you can make this a bit easier on yourself without really worsening <u title="">practical</u> performance.
 
-```
+```js
 const myFunc = ()=>{};
 const message = "Hello World!";
 
@@ -50,7 +50,7 @@ Now, this isn't nearly as bad to write, but still, if you have a lot of events o
 
 With _cambrian_, the example becomes:
 
-```
+```js
 const myFunc = ()=>{};
 const message = "Hello World!";
 
