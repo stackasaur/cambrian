@@ -1,70 +1,12 @@
-import { getId, isEvent } from "./util";
+import { getId, isEvent, isDynamic, getAttribute, eventRegex } from "./util";
 import {isSignal} from "./signal";
 
-/**
- * isDynamic
- * @description determines if an Object is subject to change or not
- * @param {unknown}obj
- * @returns {boolean}
- */
-function isDynamic(obj: unknown): obj is object|Function|Node|typeof isSignal{
-    return typeof obj === "function" || obj instanceof Node || isSignal(obj);
-}
-
-/** 
- * getAttribute
- * @description based on the template string, determines if a variable is used
- * in the context of an attribute. Returns the attribute name if so, otherwise
- * returns undefined
- * @param {string}prev the previous template string
- * @returns {string|undefined}
-**/
-function getAttribute(prev:string){
-    for (let i=prev.length-1;i>=0;i--){
-        const c = prev.charAt(i);
-
-        // if a close angle is the notable first character seen, it must be
-        // in a tag
-        if (c === ">")
-            return undefined;
-
-        // currently, when used in an attribute, quotes aren't supported.
-        // if it's an equals sign, look backwards for the attribute name
-        else if (c === "="){
-            let attNameEnd;
-            let attNameStart;
-            for (let j=i-1;j>=0;j--){
-                const c = prev.charAt(j);
-
-                // if the attribute name end exists and a space is reached, the
-                // the name has been passed.
-                if (attNameEnd != null && c === " "){
-                    attNameStart = j+1;
-                    break;
-                } 
-                // if the name end hasn't been set yet and the current
-                // character isn't a space, it's the end.
-                else if (attNameEnd == null && c !== " "){
-                    attNameEnd = j+1;
-                }
-            }
-            if (attNameStart != null && attNameEnd != null){
-                return prev.substring(attNameStart,attNameEnd);
-            }
-        } 
-        // if anything else, it can't be an attribute
-        // TODO: support quotes?
-        else if (c !== " "){
-            return undefined;
-        }
-    }
-    return undefined;
-}
 // events must have on:event syntax to pass the built in parser
-const eventRegex = /on:[a-z]+/;
+
 function html(templateStrings:TemplateStringsArray, ...args: Array<unknown>): DocumentFragment{
     // use a template because anything can be a child of a template
     const wrapper = document.createElement("template");
+    
     const chunks: Array<String> = [];
 
     const resourceMap = new Map();
@@ -137,21 +79,94 @@ function html(templateStrings:TemplateStringsArray, ...args: Array<unknown>): Do
     // for everything in the attribute map, find the element, update the
     // attribute
     attributeMap.forEach((value,key)=>{
-        let el = wrapper.content.querySelector(`[${value}="${key}"]`);
-        if (el != null && resourceMap.has(key)){
-            const resource = resourceMap.get(key);
-            if (isSignal(resource)){
-                resource.subscribe((i:unknown)=>{
-                    if (el != null){
-                        el.setAttribute(value,String(i));
+        // conditional rendering
+        if (value === ":if"){
+            let el = wrapper.content.querySelector(`[\\:if="${key}"]`);
+            if (el != null && resourceMap.has(key)){
+                const resource = resourceMap.get(key);
+                el.removeAttribute(":if");
+                let sibling = el.nextElementSibling;
+                let elseIfEls:Array<Element> = [];
+                let elseEl:Element|undefined;
+                while (sibling != null){
+                    if (sibling.hasAttribute(":elseif")){
+                        elseIfEls.push(sibling);
+                        const key = sibling.getAttribute(":elseif");
+                        attributeMap.delete(key);
+                        sibling.remove();
+                        sibling = sibling.nextElementSibling;
+                    } else if (sibling.hasAttribute(":else")){
+                        elseEl = sibling;
+                        sibling.remove();
+                        break;
+                    } else {
+                        break;
                     }
-                });
-            } else if (typeof resource === "function"){
-                console.log("TODO FUNCTION")
-            } else{
-                el.removeAttribute(value);
+                }
+                let renderedElement = el;
+                const rendered:Array<boolean> = [];
+                function handleRendering(){
+                    for (let i=0;i<rendered.length;i++){
+                        const r = rendered[i];
+                        const e = (i===0)
+                            ? el
+                            : elseIfEls[i];
+                        if (r){
+                            if (e != null){
+                                renderedElement.replaceWith(e);
+                                renderedElement = e;
+                            }
+                            return;
+                        }
+                    }
+                    if (elseEl != null){
+                        renderedElement.replaceWith(elseEl);
+                        renderedElement = elseEl;
+                    }
+                }
+                
+                if (isSignal(resource)){
+                    resource.subscribe((i:unknown)=>{
+                        rendered[0]=!!i;
+                        handleRendering();
+                    });
+                }
+                
+                elseIfEls.forEach((el,idx)=>{
+                    const key = el.getAttribute(":elseif");
+                    if (resourceMap.has(key)){
+                        const resource = resourceMap.get(key);
+                        resource.subscribe((i:unknown)=>{
+                            rendered[idx]=!!i;
+                            handleRendering();
+                        });
+                    }
+                    el.removeAttribute(":elseIf");
+                })
+
+                if(elseEl != null){
+                    elseEl.removeAttribute(":else");
+                }
+
+                resourceMap.delete(key);
             }
-            resourceMap.delete(key);
+        } else {
+            let el = wrapper.content.querySelector(`[${value}="${key}"]`);
+            if (el != null && resourceMap.has(key)){
+                const resource = resourceMap.get(key);
+                if (isSignal(resource)){
+                    resource.subscribe((i:unknown)=>{
+                        if (el != null){
+                            el.setAttribute(value,String(i));
+                        }
+                    });
+                } else if (typeof resource === "function"){
+                    console.log("TODO FUNCTION")
+                } else{
+                    el.removeAttribute(value);
+                }
+                resourceMap.delete(key);
+            }
         }
     });
 

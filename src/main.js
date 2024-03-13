@@ -18,6 +18,9 @@ setInterval(()=>{
   });
 },1000);
 
+const checkSignal = Signal(false);
+
+
 const el = html`
 <article>
   <header>counter:</header>
@@ -39,6 +42,14 @@ const el = html`
 accordian:</header>
   <div class=${classSignal}>
     i'm an accordian, click the header to close me!
+  </div>
+</article>
+<article>
+  <header>conditional rendering:</header>
+  <div>
+    <label><input type="checkbox" on:change=${()=>{checkSignal.update(v=>!v)}}>Check Me</label>
+    <p :if=${checkSignal}>Show if True</p>
+    <p :else>Show if False</p>
   </div>
 </article>`;
 
