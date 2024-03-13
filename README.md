@@ -76,3 +76,8 @@ This whole project started as a way to construct popup content within Leaflet ma
 _cambrian_ includes a simple implementation of a Signal, roughly based on Svelte's store. Shoutout to Svelte: you ran you I could crawl.
 
 Of course, you can use your own implementation too. In the eyes of cambrian, a Signal is anything that properly implements a `subscribe` method. Subscribe is expected to take a function as a parameter, which uses the changed value as its first argument.
+
+## roadmap
+ - [ ] conditional rendering
+ - [ ] iteration
+ - [ ] components/templates
