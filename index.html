@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cambrian</title>
+    <style>
+      :root{
+        font-size:16px;
+      }
+      body{
+        background-color: #f9f9f9;
+        font-family:sans-serif;
+        
+      }
+      article{
+        padding:1rem;
+        background-color: #fff;
+        margin:.5rem;
+        border-radius: 16px;
+        box-shadow:0 0 2px -1px rgba(0,0,0,.3), 0 4px 7px -5px rgba(0,0,0,.5);
+        max-width:600px;
+      }
+      article>header{
+        font-size:1.25rem;
+        margin-bottom:.5rem;
+        display:flex;
+        align-items: center;
+      }
+      article.accordian>header:hover{
+        cursor: pointer;
+      }
+      article.accordian>div{
+        display:none;
+      }
+      article.accordian.open>div{
+        display:block;
+      }
+      article.accordian:not(.open)>header{
+        margin-bottom:0;
+      }
+
+      article.accordian>header>svg.arrow{
+        margin-right:.5rem;
+        height:1em;
+        width:1em;
+      }
+      article.accordian.open>header>svg.arrow{
+        transform:rotate(90deg);
+      }
+      .red{
+        color:red;
+      }
+      .blue{
+        color:blue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>cambrian</h1>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
