@@ -64,7 +64,7 @@
     <h1>cambrian</h1>
     <div id="app"></div>
     <script type="module">
-      import {html, Reactive as Signal} from  '/src/index';
+      import {html, Reactive as Signal, expression} from  '/src/index';
       const app = document.getElementById("app");
 
       // initialize counter
@@ -84,7 +84,6 @@
       },1000);
 
       const checkSignal = Signal(false);
-
 
       const el = html`
       <article>
@@ -116,9 +115,15 @@
           <p :if=${checkSignal}>Show if True</p>
           <p :else>Show if False</p>
         </div>
-      </article>`;
+      </article>
+      <article>
+        <header>expressions:</header>
+        <div>
+          counter x2: ${expression`${counter} * 2`}
+        </div>
+      </article>
+      `;
 
-      console.log(el)
       app?.appendChild(el);
     </script>
   </body>

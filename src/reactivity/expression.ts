@@ -25,19 +25,18 @@ function expression(templateStrings: TemplateStringsArray, ...resources:unknown[
             argValues[idx] = resource;
         }
     });
-
+    chunks.push(templateStrings[templateStrings.length-1]);
     const functionBody = `return (${chunks.join("")})`;
+    
     
     argNames.push(functionBody)
     //@ts-ignore
     func = Function(...argNames);
-    console.log('func',func.toString());
 
     init = true;
 
     //@ts-ignore
     ret.set(func.apply(null,argValues));
-    
     return ret;
 }
 
