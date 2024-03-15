@@ -1,6 +1,6 @@
 import { Reactive, isReactive } from "./reactive";
 
-function Expression(templateStrings: TemplateStringsArray, ...resources:unknown[]): ReturnType<typeof Reactive>{
+function expression(templateStrings: TemplateStringsArray, ...resources:unknown[]): ReturnType<typeof Reactive>{
     const argNames: string[] = [];
     const chunks: string[] = [];
     const argValues: unknown[] = [];
@@ -16,6 +16,7 @@ function Expression(templateStrings: TemplateStringsArray, ...resources:unknown[
             resource.subscribe((i:unknown)=>{
                 argValues[idx] = i;
                 if (init){
+                    //@ts-ignore
                     ret.set(func.apply(null,argValues));
                 }
             }); 
@@ -25,14 +26,19 @@ function Expression(templateStrings: TemplateStringsArray, ...resources:unknown[
         }
     });
 
-    const functionBody = chunks.join("");
+    const functionBody = `return (${chunks.join("")})`;
     
     argNames.push(functionBody)
+    //@ts-ignore
     func = Function(...argNames);
+    console.log('func',func.toString());
 
     init = true;
 
+    //@ts-ignore
     ret.set(func.apply(null,argValues));
     
     return ret;
 }
+
+export {expression, expression as default};
