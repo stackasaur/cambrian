@@ -111,7 +111,7 @@
       <article>
         <header>conditional rendering:</header>
         <div>
-          <label><input type="radio" name="radio" on:change=${()=>{radioSignal.set('apples')}} checked>Apples</label>
+          <label><input type="radio" name="radio" on:change=${()=>{radioSignal.set('apples')}} checked data-checked=${expression`${radioSignal} == 'apples'`}>Apples</label>
           <label><input type="radio" name="radio" on:change=${()=>{radioSignal.set('oranges')}}>Oranges</label>
           <label><input type="radio"  name="radio" on:change=${()=>{radioSignal.set('banans')}}>Bananas</label>
           <p :if=${expression`${radioSignal} == 'apples'`}>You selected apples</p>
