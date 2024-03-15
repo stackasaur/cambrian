@@ -125,6 +125,7 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                 case REPLACEMENT_TYPE.ATTRIBUTE:{
                     if (att === ":if"){
                         let renderedElement = el;
+                        el.removeAttribute(":if");
                         const rendered: Boolean[] = [false];
 
                         let sibling = el.nextElementSibling;
@@ -143,10 +144,17 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                                     elifReplacementMap.set(elifId,replacementMap.get(elifId))
                                     replacementMap.delete(elifId);
                                 }
-                                sibling.remove();
+                                const tmp = sibling; 
                                 sibling = sibling.nextElementSibling;
+                                tmp.remove();
                             } else if (sibling.hasAttribute(":else")){
                                 elseEl = sibling;
+                                
+                                const elseId = sibling.getAttribute(":else");
+                                if (elseId != null && replacementMap.has(elseId)){
+                                    // @ts-ignore - very annoying
+                                    replacementMap.delete(elifId);
+                                }
                                 elseEl.removeAttribute(":else");
 
                                 rendered.push(true);
