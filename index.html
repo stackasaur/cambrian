@@ -83,7 +83,7 @@
         });
       },1000);
 
-      const checkSignal = Signal(false);
+      const radioSignal = Signal('apples');
 
       const el = html`
       <article>
@@ -111,9 +111,12 @@
       <article>
         <header>conditional rendering:</header>
         <div>
-          <label><input type="checkbox" on:change=${()=>{checkSignal.update(v=>!v)}}>Check Me</label>
-          <p :if=${checkSignal}>Show if True</p>
-          <p :else>Show if False</p>
+          <label><input type="radio" name="radio" on:change=${()=>{radioSignal.set('apples')}} checked>Apples</label>
+          <label><input type="radio" name="radio" on:change=${()=>{radioSignal.set('oranges')}}>Oranges</label>
+          <label><input type="radio"  name="radio" on:change=${()=>{radioSignal.set('banans')}}>Bananas</label>
+          <p :if=${expression`${radioSignal} == 'apples'`}>You selected apples</p>
+          <p :elseif=${expression`${radioSignal} == 'oranges'`}>You selected oranges</p>
+          <p :else>You selected bananas</p>
         </div>
       </article>
       <article>
