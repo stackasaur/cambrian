@@ -190,16 +190,28 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                             }
                             el.removeAttribute(":elseIf");
                         })
-                    } else if (att !== null){
+                    } else if (att != null){
                         if (isReactive(resource)){
                             resource.subscribe((i:unknown)=>{
-                                //@ts-ignore
-                                el.setAttribute(att,String(i));
+                                if (el != null && el instanceof Element){
+                                    if(typeof i === "boolean"){
+                                        el.removeAttribute(att);
+                                        if (i){
+                                            el.toggleAttribute(att);
+                                        }
+                                    } else{
+                                        el.setAttribute(att,String(i));
+                                    }
+                                }
                             });
                         } else if (typeof resource === "function"){
                             console.log("TODO FUNCTION")
-                        } else{
-                            //@ts-ignore
+                        } else if(typeof resource === "boolean"){
+                            el.removeAttribute(att);
+                            if (resource){
+                                el.toggleAttribute(att);
+                            }
+                        } else {
                             el.removeAttribute(att);
                         }
                     }
