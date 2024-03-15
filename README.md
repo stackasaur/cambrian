@@ -1,6 +1,8 @@
 # Cambrian
-> [!NOTE]
-> This library is 
+> [!WARNING]
+> This library is very much in progress, it is currently v0.1.0 with no target 
+> date for a v1.0.0 release. Expect breaking changes and stupid code refactors
+> that move everything around in preparation of new features.
 ---
 Creating HTML elements in JavaScript isn't hard.
 
