@@ -76,10 +76,19 @@ _cambrian_ includes an implementation of a simple subscription based object _Rea
 
 Of course, you can use your own implementation too. In the eyes of _cambrian_, a Reactive object is anything that properly implements a `subscribe` method. Subscribe is expected to take a function as a parameter, which uses the changed value as its first argument.
 
+```js
+const r = Reactive("foo");
+r.subscribe(i=>console.log(i));
+// expected output: foo
+
+r.set("bar");
+// expected output: bar
+```
+
 ## Expressions
 _cambrian_ includes the ability to bind expressions. Simliar to other syntax, the `expression` template tag can be used to create a reactive expression.
 
-```
+```js
 const arg0 = Reactive(1);
 const arg1 = Reactive(1);
 
