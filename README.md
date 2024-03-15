@@ -93,6 +93,7 @@ Given the low-level nature of the framework, it seems weird to enforce bleeding 
 
 ## Roadmap
  - [x] conditional rendering
+ - [x] expressions
  - [ ] iteration
  - [ ] components/templates
 

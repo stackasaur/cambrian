@@ -231,7 +231,6 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
             }
         }
     }
-    console.log(chunks,template)
     replacementMap.clear();
     chunks.length = 0;
 
