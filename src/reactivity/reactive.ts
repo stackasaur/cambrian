@@ -1,4 +1,4 @@
-function Signal(val:unknown){
+function Reactive(val:unknown){
     const subscriptions: Set<Function> = new Set();
     let value = val;
     
@@ -33,8 +33,8 @@ function Signal(val:unknown){
     }
 }
 
-function isSignal(obj: unknown): obj is ReturnType<typeof Signal>{
+function isReactive(obj: unknown): obj is ReturnType<typeof Reactive>{
     return (obj != null && typeof obj === "object" && "subscribe" in obj);
 }
 
-export {isSignal, Signal, Signal as default};
+export {isReactive, Reactive, Reactive as default};
