@@ -5,7 +5,7 @@ function expression(templateStrings: TemplateStringsArray, ...resources:unknown[
     const chunks: string[] = [];
     const argValues: unknown[] = [];
     let init = false;
-    let ret = Reactive(null);
+    const ret = Reactive(null);
     let func = ()=>{};
     resources.forEach((resource,idx)=>{
         const prev = templateStrings[idx];
@@ -16,8 +16,8 @@ function expression(templateStrings: TemplateStringsArray, ...resources:unknown[
             resource.subscribe((i:unknown)=>{
                 argValues[idx] = i;
                 if (init){
-                    //@ts-ignore
-                    ret.set(func.apply(null,argValues));
+                    //@ts-expect-error dynamic args
+                    ret.value = func(...argValues);
                 }
             }); 
         } else{
@@ -30,13 +30,13 @@ function expression(templateStrings: TemplateStringsArray, ...resources:unknown[
     
     
     argNames.push(functionBody)
-    //@ts-ignore
+    //@ts-expect-error dynamic function
     func = Function(...argNames);
 
     init = true;
 
-    //@ts-ignore
-    ret.set(func.apply(null,argValues));
+    //@ts-expect-error dynamic args
+    ret.value = func(...argValues);
     return ret;
 }
 

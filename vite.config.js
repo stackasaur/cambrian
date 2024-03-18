@@ -3,7 +3,7 @@ import { resolve } from 'path'
 
 export default defineConfig(({mode})=>{
     return {
-        publicDir: mode==='development',
+        publicDir: false,
         build: {
             
             lib: {

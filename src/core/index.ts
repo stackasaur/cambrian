@@ -1,11 +1,11 @@
 import { getId, isEvent, isDynamic, getAttribute, eventRegex } from "../util";
-import { isReactive } from "../reactivity";
+import { isReactive, type Reactive } from "../reactivity";
 
 enum REPLACEMENT_TYPE{
     ATTRIBUTE,
     ELEMENT,
     LISTENER
-};
+}
 type Replacement = {
     id:string,
     type:REPLACEMENT_TYPE,
@@ -33,14 +33,12 @@ function getReplacement(resource:unknown, prev?:string):Replacement|string{
         } 
         // listener
         else if (eventRegex.test(attName) && isEvent(attName.substring(3))){
-            //@ts-ignore - TODO: fix this one
-            const event = attName.substring(3);
+            const event = attName.substring(3) as keyof ElementEventMap;
             return {
                 id,
                 type:REPLACEMENT_TYPE.LISTENER,
                 query:`[on\\:${event}="${id}"]`,
                 att:`on:${event}`,
-                //@ts-ignore so annoying
                 event,
                 resource,
                 value: `"${id}"`
@@ -75,7 +73,7 @@ function getReplacement(resource:unknown, prev?:string):Replacement|string{
     return String(resource);
 }
 
-function handleConditionalRendering(rendered:Boolean[], el:Element, els:Element[]):Element|undefined{
+function handleConditionalRendering(rendered:boolean[], el:Element, els:Element[]):Element|undefined{
     for (let i=0;i<rendered.length;i++){
         const r = rendered[i];
         const e = els[i];
@@ -97,7 +95,7 @@ function handleConditionalRendering(rendered:Boolean[], el:Element, els:Element[
 function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
     const template = document.createElement("template");
 
-    const chunks: Array<String> = [];
+    const chunks: Array<string> = [];
 
     const replacementMap: Map<string,Replacement> = new Map();
     
@@ -126,7 +124,7 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                     if (att === ":if"){
                         let renderedElement = el;
                         el.removeAttribute(":if");
-                        const rendered: Boolean[] = [false];
+                        const rendered: boolean[] = [false];
 
                         let sibling = el.nextElementSibling;
                         const elifEls:Element[] = [];
@@ -140,9 +138,11 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                                 rendered.push(false);
                                 const elifId = sibling.getAttribute(":elseif");
                                 if (elifId != null && replacementMap.has(elifId)){
-                                    // @ts-ignore - very annoying
-                                    elifReplacementMap.set(elifId,replacementMap.get(elifId))
-                                    replacementMap.delete(elifId);
+                                    const replacement = replacementMap.get(elifId);
+                                    if (replacement != null){
+                                        elifReplacementMap.set(elifId,replacement)
+                                        replacementMap.delete(elifId);
+                                    }
                                 }
                                 const tmp = sibling; 
                                 sibling = sibling.nextElementSibling;
@@ -152,8 +152,7 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                                 
                                 const elseId = sibling.getAttribute(":else");
                                 if (elseId != null && replacementMap.has(elseId)){
-                                    // @ts-ignore - very annoying
-                                    replacementMap.delete(elifId);
+                                    replacementMap.delete(elseId);
                                 }
                                 elseEl.removeAttribute(":else");
 
@@ -179,28 +178,32 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                         elifEls.forEach((el,idx)=>{
                             const key = el.getAttribute(":elseif");
                             if (key != null && elifReplacementMap.has(key)){
-                                //@ts-ignore
-                                const {resource} = elifReplacementMap.get(key);
-                                resource.subscribe((i:unknown)=>{
-                                    rendered[idx+1]=!!i;
-                                    const e = handleConditionalRendering(rendered,renderedElement,els);
-                                    if (e != null)
-                                        renderedElement = e;
-                                });
+                                const replacement = elifReplacementMap.get(key);
+                                if (replacement != null){
+                                    const resource = replacement.resource as ReturnType<typeof Reactive>;
+                                    resource.subscribe((i:unknown)=>{
+                                        rendered[idx+1]=!!i;
+                                        const e = handleConditionalRendering(rendered,renderedElement,els);
+                                        if (e != null)
+                                            renderedElement = e;
+                                    });
+                                }
                             }
                             el.removeAttribute(":elseIf");
                         })
                     } else if (att !== null){
                         if (isReactive(resource)){
                             resource.subscribe((i:unknown)=>{
-                                //@ts-ignore
-                                el.setAttribute(att,String(i));
+                                if (el != null && att != null && el instanceof Element){
+                                    el.setAttribute(att,String(i));
+                                }
                             });
                         } else if (typeof resource === "function"){
                             console.log("TODO FUNCTION")
                         } else{
-                            //@ts-ignore
-                            el.removeAttribute(att);
+                            if (el != null && att != null && el instanceof Element){
+                                el.removeAttribute(att);
+                            }
                         }
                     }
                     break;
@@ -228,8 +231,8 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                 }
                 case REPLACEMENT_TYPE.LISTENER:{
                     if (event != null && typeof resource === "function"){
-                        //@ts-ignore
-                        el.addEventListener(event,resource);
+                        
+                        el.addEventListener(event,resource as EventListenerOrEventListenerObject);
                     }
                     if (att != null)
                         el.removeAttribute(att);
