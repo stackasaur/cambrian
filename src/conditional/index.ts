@@ -1,5 +1,5 @@
-import type { Replacement } from "..";
-import { isReactive, type Reactive } from "../../reactivity";
+import type { Replacement } from "../core";
+import { isReactive, type Reactive } from "../reactivity";
 
 export const IF_ATT = ":if";
 export const ELIF_ATT = ":elseif";

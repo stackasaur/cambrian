@@ -1,6 +1,6 @@
 import { getId, isEvent, isDynamic, getAttribute, eventRegex } from "../util";
 import { isReactive } from "../reactivity";
-import { handleConditionalRendering, IF_ATT } from "./conditional";
+import { handleConditionalRendering, IF_ATT } from "../conditional";
 
 export enum REPLACEMENT_TYPE{
     ATTRIBUTE,
