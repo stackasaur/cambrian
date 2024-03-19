@@ -21,6 +21,7 @@ function isEvent(evtName: string): evtName is keyof ElementEventMap{
  * @param {unknown}obj
  * @returns {boolean}
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 function isDynamic(obj: unknown): obj is object|Function|Node|typeof isReactive{
     return typeof obj === "function" || obj instanceof Node || isReactive(obj);
 }
