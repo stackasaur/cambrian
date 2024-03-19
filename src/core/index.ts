@@ -191,19 +191,36 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                             }
                             el.removeAttribute(":elseIf");
                         })
-                    } else if (att !== null){
+                    } else if (att != null){
                         if (isReactive(resource)){
                             resource.subscribe((i:unknown)=>{
                                 if (el != null && att != null && el instanceof Element){
-                                    el.setAttribute(att,String(i));
+                                    if(typeof i === "boolean"){
+                                        el.removeAttribute(att);
+                                        if (i){
+                                            el.toggleAttribute(att);
+                                        }
+                                    } else{
+                                        el.setAttribute(att,String(i));
+                                    }
                                 }
                             });
                         } else if (typeof resource === "function"){
                             console.log("TODO FUNCTION")
-                        } else{
-                            if (el != null && att != null && el instanceof Element){
-                                el.removeAttribute(att);
+                        } else if(typeof resource === "boolean"){
+                            el.removeAttribute(att);
+                            if (resource){
+                                el.toggleAttribute(att);
                             }
+                        } else if (el != null && att != null && el instanceof Element){{
+                          if(typeof resource === "boolean"){
+                            el.removeAttribute(att);
+                            if (resource){
+                                el.toggleAttribute(att);
+                            }
+                          } else {
+                            el.removeAttribute(att);
+                          }
                         }
                     }
                     break;

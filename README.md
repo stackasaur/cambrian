@@ -71,21 +71,24 @@ const card = html`
 
 That's it!
 
-I'm not going to say _cambrian_ is better than the above methods, because it isn't, but my benchmarks show it is not noticeably worse for the useability improvements.
-
-By no means should you see _cambrian_ as an alternative to popular frameworks like React, Vue, Svelte, etc., but you can see it as a tool you can use within those other frameworks. 
-
-This whole project started as a way to construct popup content within Leaflet maps, and such tasks are what it's good at. Generating simple html elements with events and reactivity.
-
 ## Reactivity
 _cambrian_ includes an implementation of a simple subscription based object _Reactive_.
 
 Of course, you can use your own implementation too. In the eyes of _cambrian_, a Reactive object is anything that properly implements a `subscribe` method. Subscribe is expected to take a function as a parameter, which uses the changed value as its first argument.
 
+```js
+const r = Reactive("foo");
+r.subscribe(i=>console.log(i));
+// expected output: foo
+
+r.set("bar");
+// expected output: bar
+```
+
 ## Expressions
 _cambrian_ includes the ability to bind expressions. Simliar to other syntax, the `expression` template tag can be used to create a reactive expression.
 
-```
+```js
 const arg0 = Reactive(1);
 const arg1 = Reactive(1);
 
@@ -95,6 +98,12 @@ console.log(exp.get()); // expected output: 2
 arg0.set(2);
 console.log(exp.get()); // expected output: 3
 ```
+
+## Iteration
+coming soon
+
+## Components
+coming soon
 
 ## Roadmap
  - [x] conditional rendering
