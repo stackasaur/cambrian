@@ -102,7 +102,7 @@ console.log(exp.get()); // expected output: 3
 ```
 
 ## Iteration
-coming soon
+in progress
 
 ## Components
 coming soon
