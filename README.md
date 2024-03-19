@@ -1,8 +1,8 @@
 # Cambrian
 > [!WARNING]
-> This library is very much in progress, it is currently v0.1.0 with no target 
-> date for a v1.0.0 release. Expect breaking changes and stupid code refactors
-> that move everything around in preparation of new features.
+> This library is very much in progress with no target date for a v1.0.0
+> release. Expect breaking changes and stupid code refactors that move 
+> everything around in preparation of new features.
 ---
 Creating HTML elements in JavaScript isn't hard.
 
@@ -69,7 +69,9 @@ const card = html`
 `;
 ```
 
-That's it!
+That's it! 
+
+The goal of _cambrian_ isn't to create a replacement to existing JS frameworks, but rather provide a lightweight alternative for when dynamically creating HTML elements is needed in a runtime environment. _cambrian_ started as a tool to build dynamic popups within the [Leaflet](https://leafletjs.com/) mapping library. Since then, I've found great use in creating overlays such as dialogs or notifications, especially in frameworks where passing an entire component reference around is impossible.
 
 ## Reactivity
 _cambrian_ includes an implementation of a simple subscription based object _Reactive_.
