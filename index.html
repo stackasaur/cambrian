@@ -113,7 +113,7 @@
         <div>
           <label><input type="radio" name="radio" on:change=${()=>{radioSignal.value = 'apples'}} checked>Apples</label>
           <label><input type="radio" name="radio" on:change=${()=>{radioSignal.value = 'oranges'}}>Oranges</label>
-          <label><input type="radio"  name="radio" on:change=${()=>{radioSignal.value = 'banans'}}>Bananas</label>
+          <label><input type="radio"  name="radio" on:change=${()=>{radioSignal.value = 'bananas'}}>Bananas</label>
           <p :if=${expression`${radioSignal} == 'apples'`}>You selected apples</p>
           <p :elseif=${expression`${radioSignal} == 'oranges'`}>You selected oranges</p>
           <p :else>You selected bananas</p>
