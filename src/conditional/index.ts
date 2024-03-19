@@ -25,7 +25,7 @@ function render(
 
 export function handleConditionalRendering(resource:unknown, el: Element, replacementMap: Map<string, Replacement>) {
 	let renderedElement = el;
-	el.removeAttribute(":if");
+	el.removeAttribute(IF_ATT);
 	const rendered: boolean[] = [false];
 
 	let sibling = el.nextElementSibling;
@@ -35,10 +35,10 @@ export function handleConditionalRendering(resource:unknown, el: Element, replac
 	const elifReplacementMap: Map<string, Replacement> = new Map();
 
 	while (sibling != null) {
-		if (sibling.hasAttribute(":elseif")) {
+		if (sibling.hasAttribute(ELIF_ATT)) {
 			elifEls.push(sibling);
 			rendered.push(false);
-			const elifId = sibling.getAttribute(":elseif");
+			const elifId = sibling.getAttribute(ELIF_ATT);
 			if (elifId != null && replacementMap.has(elifId)) {
 				const replacement = replacementMap.get(elifId);
 				if (replacement != null) {
@@ -49,14 +49,14 @@ export function handleConditionalRendering(resource:unknown, el: Element, replac
 			const tmp = sibling;
 			sibling = sibling.nextElementSibling;
 			tmp.remove();
-		} else if (sibling.hasAttribute(":else")) {
+		} else if (sibling.hasAttribute(ELSE_ATT)) {
 			elseEl = sibling;
 
-			const elseId = sibling.getAttribute(":else");
+			const elseId = sibling.getAttribute(ELSE_ATT);
 			if (elseId != null && replacementMap.has(elseId)) {
 				replacementMap.delete(elseId);
 			}
-			elseEl.removeAttribute(":else");
+			elseEl.removeAttribute(ELSE_ATT);
 
 			rendered.push(true);
 			sibling.remove();
@@ -76,7 +76,7 @@ export function handleConditionalRendering(resource:unknown, el: Element, replac
 		});
 	}
 	elifEls.forEach((el, idx) => {
-		const key = el.getAttribute(":elseif");
+		const key = el.getAttribute(ELIF_ATT);
 		if (key != null && elifReplacementMap.has(key)) {
 			const replacement = elifReplacementMap.get(key);
 			if (replacement != null) {
@@ -88,6 +88,6 @@ export function handleConditionalRendering(resource:unknown, el: Element, replac
 				});
 			}
 		}
-		el.removeAttribute(":elseIf");
+		el.removeAttribute(ELIF_ATT);
 	});
 }
