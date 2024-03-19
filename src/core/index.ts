@@ -1,6 +1,7 @@
 import { getId, isEvent, isDynamic, getAttribute, eventRegex } from "../util";
 import { isReactive } from "../reactivity";
 import { handleConditionalRendering, IF_ATT } from "../conditional";
+import { handleIteration, EACH_ATT } from "../iteration";
 
 export enum REPLACEMENT_TYPE{
     ATTRIBUTE,
@@ -105,7 +106,11 @@ function parse(templateStrings:TemplateStringsArray, ...resources:unknown[]){
                 case REPLACEMENT_TYPE.ATTRIBUTE:{
                     if (att ===  IF_ATT){
                         handleConditionalRendering(resource,el,replacementMap);
-                    } else if (att != null){
+                    } 
+                    else if (att === EACH_ATT){
+                        handleIteration(resource,el,replacementMap);
+                    }
+                    else if (att != null){
                         if (isReactive(resource)){
                             resource.subscribe((i:unknown)=>{
                                 if (el != null && att != null && el instanceof Element){
